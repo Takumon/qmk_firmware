@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// https://docs.qmk.fm/#/keycodes
 #include QMK_KEYBOARD_H
 #include <stdio.h>
 
@@ -51,9 +52,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define WIN2 LGUI(KC_2)
 #define WIN3 LGUI(KC_3)
 #define WIN4 LGUI(KC_4)
-#define WIN_LEFT LGUI(LCTL(KC_LEFT))
-#define WIN_RGHT LGUI(LCTL(KC_RIGHT))
-#define WIN_SCRNSHT LGUI(LSFT(KC_S))
+
+#define WIN_TAB LGUI(KC_TAB)
+
+
+#define WIN_UP LGUI(KC_UP)
+#define WIN_DOWN LGUI(KC_DOWN)
+#define WIN_RIGHT LGUI(KC_RIGHT)
+#define WIN_LEFT LGUI(KC_LEFT)
+
+
+#define WIN_SCR LGUI(LSFT(KC_S))
+#define WIN_E LGUI(KC_E)
+
+#define WIN_NXT LGUI(LCTL(KC_LEFT))
+#define WIN_PRV LGUI(LCTL(KC_RIGHT))
+#define APP_NXT LALT(KC_ESC)
+#define APP_PRV LALT(LSFT(KC_ESC))
+#define APP_END LALT(KC_F4)
+#define TAB_NXT LCTL(KC_TAB)
+#define TAB_PRV LCTL(LSFT(KC_TAB))
+#define TAB_END LCTL(KC_W)
+
+#define LSLP MT(MOD_LSFT, JP_LBRC)  // タップで[   全角時「   ホールドで左Shift
+#define RSRP MT(MOD_RSFT, JP_RBRC)  // タップで]   全角時 」  ホールドで右Shift
+
+#define WIN_ENT LGUI_T(KC_ENT)
+#define ALT_SPC LALT(KC_SPACE)
 
 enum custom_keycodes {
     UP5 = SAFE_RANGE,
@@ -61,69 +86,100 @@ enum custom_keycodes {
     BSPCDEL,
 };
 
-enum {
-  TD_HENKAN = 0,
-};
-
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [TD_HENKAN] = ACTION_TAP_DANCE_DOUBLE(JP_MHEN, JP_HENK),
-};
-
-
-// TODO 日本語の鉤括弧の入力
-// TODO alt tab入力を簡単に
 static uint8_t saved_mods = 0;
+
+enum combos {
+    COMBO1,
+    COMBO2,
+    COMBO3,
+    COMBO4,
+    COMBO5,
+    COMBO6,
+};
+
+const uint16_t PROGMEM combo1[] = {KC_D, KC_F, COMBO_END};
+const uint16_t PROGMEM combo2[] = {KC_F, KC_G, COMBO_END};
+const uint16_t PROGMEM combo3[] = {KC_C, KC_V, COMBO_END};
+const uint16_t PROGMEM combo4[] = {KC_V, KC_B, COMBO_END};
+
+const uint16_t PROGMEM combo5[] = {KC_J, KC_K, COMBO_END};
+const uint16_t PROGMEM combo6[] = {KC_M, KC_COMM, COMBO_END};
+
+combo_t key_combos[COMBO_COUNT] = {
+  [COMBO1] = COMBO(combo1, JP_MHEN),
+  [COMBO2] = COMBO(combo2, KC_ENT),
+  [COMBO3] = COMBO(combo3, WIN1),
+  [COMBO4] = COMBO(combo4, ALT_SPC),
+
+  [COMBO5] = COMBO(combo5, JP_HENK),
+  [COMBO6] = COMBO(combo6, OSM(MOD_RSFT)),
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_LWIN,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  BSPCDEL,
+      CW_TOGG,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  BSPCDEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, LT(3,KC_ENT),
+       KC_TAB,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,  KC_ENT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, KC_RSFT,
+      KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, JP_UNDS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                     KC_LALT, KC_LCTL, LT(2,KC_SPC),  LT(2,KC_ESC), LT(1,KC_SPC), TD(TD_HENKAN)
+                                     KC_LALT, KC_LCTL, LT(2,KC_SPC),      MO(4), LT(1,KC_SPC), LT(3,KC_ESC)
                                       //`--------------------------'  `--------------------------'
-
   ),
 
+  // 記号
   [1] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_LWIN, KC_EXLM, JP_DQUO, KC_HASH,  KC_DLR, KC_PERC,                        JP_AT,     UP5,   KC_UP, JP_CIRC, JP_TILD, BSPCDEL,
+      CW_TOGG, KC_EXLM, JP_TILD, KC_HASH,  KC_DLR, KC_PERC,                        JP_AT,     UP5,   KC_UP, XXXXXXX, XXXXXXX, BSPCDEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB, JP_AMPR, JP_QUOT,  JP_GRV,  JP_EQL, JP_COLN,                      KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END, KC_TRNS,
+       KC_TAB, JP_AMPR, JP_PIPE, JP_CIRC,  JP_EQL, JP_COLN,                      KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END,  KC_ENT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, JP_BSLS, JP_PLUS, KC_MINS, JP_ASTR, JP_PIPE,                      BSPCDEL,  KC_F12,   DOWN5,   KC_F2,  JP_UNDS, KC_RSFT,
+      KC_LSFT, JP_BSLS, JP_PLUS, KC_MINS, JP_UNDS, JP_ASTR,                      BSPCDEL,  KC_F12,   DOWN5,  KC_F2,  XXXXXXX, JP_UNDS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,    KC_TRNS, KC_TRNS, TD(TD_HENKAN)
+                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
   ),
 
+  // 数字、移動
   [2] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_LWIN,    KC_1,    KC_2,    KC_3,    KC_4,   KC_5,                          KC_6,    KC_7,    KC_8,    KC_9,    KC_0, BSPCDEL,
+      CW_TOGG,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, BSPCDEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB,    WIN1,    WIN2,    WIN3,    WIN4,  KC_ENT,                      JP_LPRN, JP_RPRN, JP_LBRC, JP_RBRC, XXXXXXX, KC_TRNS,
+       KC_TAB, XXXXXXX,   WIN_E, APP_PRV, APP_NXT, APP_END,                      WIN_TAB,WIN_LEFT,WIN_RIGHT, WIN_UP, XXXXXXX,  KC_ENT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, WIN_SCRNSHT,WIN_LEFT,WIN_RGHT,KC_F13,                    JP_LCBR, JP_RCBR,   KC_LT,   KC_GT, XXXXXXX, KC_RSFT,
+      KC_LSFT, XXXXXXX, WIN_SCR, WIN_PRV, WIN_NXT, XXXXXXX,                      TAB_END, TAB_PRV, TAB_NXT,WIN_DOWN, XXXXXXX, JP_UNDS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,    KC_TRNS, KC_TRNS, TD(TD_HENKAN)
+                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
+                                      //`--------------------------'  `--------------------------'
+  ),
+  // マウス、その他
+  [3] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      CW_TOGG, XXXXXXX,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                      XXXXXXX, XXXXXXX, KC_MS_U, XXXXXXX, XXXXXXX, BSPCDEL,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       KC_TAB, XXXXXXX, XXXXXXX, KC_BTN1, KC_BTN2, XXXXXXX,                      XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, KC_VOLU,  KC_ENT,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, KC_WH_U, XXXXXXX, KC_WH_D, KC_VOLD, JP_UNDS,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [3] = LAYOUT_split_3x6_3(
+  // 囲み記号
+  [4] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_LWIN, XXXXXXX,   KC_F2, XXXXXXX, XXXXXXX,   KC_F5,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  KC_F10, BSPCDEL,
+      CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, JP_LCBR,  JP_GRV,                      JP_RCBR,     UP5,   KC_UP, XXXXXXX, XXXXXXX, BSPCDEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB,  KC_F11,  KC_F12, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_VOLU, KC_VOLD, XXXXXXX, XXXXXXX, XXXXXXX, KC_TRNS,
+       KC_TAB, XXXXXXX, XXXXXXX, XXXXXXX, JP_LPRN, JP_DQUO,                      JP_RPRN, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END,  KC_ENT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_RSFT,
+      KC_LSFT, XXXXXXX, XXXXXXX,   KC_LT, JP_LBRC, JP_QUOT,                      JP_RBRC, BSPCDEL,   DOWN5, XXXXXXX, XXXXXXX, JP_UNDS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,     KC_TRNS, KC_TRNS, TD(TD_HENKAN)
+                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
   )
 };
+
 
 #ifdef OLED_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
@@ -268,3 +324,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 #endif // OLED_ENABLE
+
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        case KC_A ... KC_Z:
+        case JP_UNDS:
+            add_weak_mods(MOD_BIT(KC_LSFT));
+            return true;
+
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+            return true;
+
+        default:
+            return false;
+    }
+}

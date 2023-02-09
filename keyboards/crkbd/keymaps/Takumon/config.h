@@ -49,3 +49,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 #define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
+#define COMBO_COUNT 6
+#define BOTH_SHIFTS_TURNS_ON_CAPS_WORD
+
+// MK_KINETIC_SPEED	undefined	Enable kinetic mode
+#undef  MOUSEKEY_DELAY
+#define MOUSEKEY_DELAY	5 // Delay between pressing a movement key and cursor movement
+#undef  MOUSEKEY_INTERVAL
+#define MOUSEKEY_INTERVAL	3 // Time between cursor movements in milliseconds
+#undef  MOUSEKEY_MOVE_DELTA
+#define MOUSEKEY_MOVE_DELTA	1 // Step size for accelerating from initial to base speed
+#undef  MOUSEKEY_INITIAL_SPEED
+#define MOUSEKEY_INITIAL_SPEED	2 // Initial speed of the cursor in pixel per second
+#undef  MOUSEKEY_BASE_SPEED
+#define MOUSEKEY_BASE_SPEED	2 // Maximum cursor speed at which acceleration stops
+#undef  MOUSEKEY_DECELERATED_SPEED
+#define MOUSEKEY_DECELERATED_SPEED	4 // Decelerated cursor speed
+#undef  MOUSEKEY_ACCELERATED_SPEED
+#define MOUSEKEY_ACCELERATED_SPEED	10 // Accelerated cursor speed
+
+// ホイールキー入力から反応までの遅延
+#undef  MOUSEKEY_WHEEL_DELAY
+#define MOUSEKEY_WHEEL_DELAY 50
+
+// ホイールキー押しっぱなしの時の反応までのインターバル
+#undef  MOUSEKEY_WHEEL_INTERVAL
+#define MOUSEKEY_WHEEL_INTERVAL 80
+
+// ホイールの移動スピード
+#undef  MOUSEKEY_WHEEL_MAX_SPEED
+#define MOUSEKEY_WHEEL_MAX_SPEED 2
+
+// ホイール操作がトップスピードになるまでの時間
+#undef  MOUSEKEY_WHEEL_TIME_TO_MAX
+#define MOUSEKEY_WHEEL_TIME_TO_MAX 100
