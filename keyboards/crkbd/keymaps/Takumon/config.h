@@ -28,7 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define MASTER_RIGHT
 // #define EE_HANDS
 
-//#define TAPPING_FORCE_HOLD
+#define MK_3_SPEED
+#define MK_MOMENTARY_ACCEL
 #define TAPPING_TERM 150
 
 #ifdef RGBLIGHT_ENABLE
@@ -52,34 +53,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define COMBO_COUNT 6
 #define BOTH_SHIFTS_TURNS_ON_CAPS_WORD
 
-// MK_KINETIC_SPEED	undefined	Enable kinetic mode
-#undef  MOUSEKEY_DELAY
-#define MOUSEKEY_DELAY	5 // Delay between pressing a movement key and cursor movement
-#undef  MOUSEKEY_INTERVAL
-#define MOUSEKEY_INTERVAL	3 // Time between cursor movements in milliseconds
-#undef  MOUSEKEY_MOVE_DELTA
-#define MOUSEKEY_MOVE_DELTA	1 // Step size for accelerating from initial to base speed
-#undef  MOUSEKEY_INITIAL_SPEED
-#define MOUSEKEY_INITIAL_SPEED	2 // Initial speed of the cursor in pixel per second
-#undef  MOUSEKEY_BASE_SPEED
-#define MOUSEKEY_BASE_SPEED	2 // Maximum cursor speed at which acceleration stops
-#undef  MOUSEKEY_DECELERATED_SPEED
-#define MOUSEKEY_DECELERATED_SPEED	4 // Decelerated cursor speed
-#undef  MOUSEKEY_ACCELERATED_SPEED
-#define MOUSEKEY_ACCELERATED_SPEED	10 // Accelerated cursor speed
+// #define MK_C_OFFSET_UNMOD   12
+// #define MK_C_INTERVAL_UNMOD 16
+// #define MK_C_OFFSET_0       2
+// #define MK_C_INTERVAL_0     16
+// #define MK_C_OFFSET_1       4
+// #define MK_C_INTERVAL_1     16
+// #define MK_C_OFFSET_2       24
+// #define MK_C_INTERVAL_2     16
+// #define MK_W_OFFSET_UNMOD   1
+// #define MK_W_INTERVAL_UNMOD 40
+// #define MK_W_OFFSET_0       1
+// #define MK_W_INTERVAL_0     360
+// #define MK_W_OFFSET_1       1
+// #define MK_W_INTERVAL_1     120
+// #define MK_W_OFFSET_2       1
+// #define MK_W_INTERVAL_2     20
 
-// ホイールキー入力から反応までの遅延
-#undef  MOUSEKEY_WHEEL_DELAY
-#define MOUSEKEY_WHEEL_DELAY 50
+// #undef  MOUSEKEY_DELAY
+// #define MOUSEKEY_DELAY	5 // Delay between pressing a movement key and cursor movement
+// #undef  MOUSEKEY_INTERVAL
+// #define MOUSEKEY_INTERVAL	3 // Time between cursor movements in milliseconds
+// #undef  MOUSEKEY_MOVE_DELTA
+// #define MOUSEKEY_MOVE_DELTA	1 // Step size for accelerating from initial to base speed
+// #undef  MOUSEKEY_INITIAL_SPEED
+// #define MOUSEKEY_INITIAL_SPEED	2 // Initial speed of the cursor in pixel per second
+// #undef  MOUSEKEY_BASE_SPEED
+// #define MOUSEKEY_BASE_SPEED	2 // Maximum cursor speed at which acceleration stops
+// #undef  MOUSEKEY_DECELERATED_SPEED
+// #define MOUSEKEY_DECELERATED_SPEED	4 // Decelerated cursor speed
+// #undef  MOUSEKEY_ACCELERATED_SPEED
+// #define MOUSEKEY_ACCELERATED_SPEED	10 // Accelerated cursor speed
 
-// ホイールキー押しっぱなしの時の反応までのインターバル
-#undef  MOUSEKEY_WHEEL_INTERVAL
-#define MOUSEKEY_WHEEL_INTERVAL 80
-
-// ホイールの移動スピード
-#undef  MOUSEKEY_WHEEL_MAX_SPEED
-#define MOUSEKEY_WHEEL_MAX_SPEED 2
-
-// ホイール操作がトップスピードになるまでの時間
-#undef  MOUSEKEY_WHEEL_TIME_TO_MAX
-#define MOUSEKEY_WHEEL_TIME_TO_MAX 100
+// #undef  MOUSEKEY_WHEEL_DELAY
+// #define MOUSEKEY_WHEEL_DELAY 50
+// #undef  MOUSEKEY_WHEEL_INTERVAL
+// #define MOUSEKEY_WHEEL_INTERVAL 80
+// #undef  MOUSEKEY_WHEEL_MAX_SPEED
+// #define MOUSEKEY_WHEEL_MAX_SPEED 2
+// #undef  MOUSEKEY_WHEEL_TIME_TO_MAX
+// #define MOUSEKEY_WHEEL_TIME_TO_MAX 100

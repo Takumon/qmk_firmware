@@ -52,6 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define WIN2 LGUI(KC_2)
 #define WIN3 LGUI(KC_3)
 #define WIN4 LGUI(KC_4)
+#define WIN5 LGUI(KC_5)
 
 #define WIN_TAB LGUI(KC_TAB)
 
@@ -61,12 +62,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define WIN_RIGHT LGUI(KC_RIGHT)
 #define WIN_LEFT LGUI(KC_LEFT)
 
+#define DISP_RIGHT LGUI(LSFT(KC_RIGHT))
+#define DISP_LEFT LGUI(LSFT(KC_LEFT))
+
 
 #define WIN_SCR LGUI(LSFT(KC_S))
 #define WIN_E LGUI(KC_E)
+#define WIN_V LGUI(KC_V)
 
-#define WIN_NXT LGUI(LCTL(KC_LEFT))
-#define WIN_PRV LGUI(LCTL(KC_RIGHT))
+#define WIN_NXT LGUI(LCTL(KC_RIGHT))
+#define WIN_PRV LGUI(LCTL(KC_LEFT))
 #define APP_NXT LALT(KC_ESC)
 #define APP_PRV LALT(LSFT(KC_ESC))
 #define APP_END LALT(KC_F4)
@@ -80,13 +85,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define WIN_ENT LGUI_T(KC_ENT)
 #define ALT_SPC LALT(KC_SPACE)
 
+#define CTRL_Z LCTL(KC_Z)
+#define CTRL_X LCTL(KC_X)
+#define CTRL_C LCTL(KC_C)
+#define CTRL_V LCTL(KC_V)
+
+#define HIS_NEXT LALT(KC_RIGHT)
+#define HIS_PREV LALT(KC_LEFT)
+
 enum custom_keycodes {
     UP5 = SAFE_RANGE,
     DOWN5,
-    BSPCDEL,
+    BSPC_DEL,
+    SCLN_CLN,
 };
 
 static uint8_t saved_mods = 0;
+
+enum {
+    TD_APP_END,
+};
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [TD_APP_END] = ACTION_TAP_DANCE_DOUBLE(XXXXXXX, APP_END),
+};
 
 enum combos {
     COMBO1,
@@ -115,70 +137,85 @@ combo_t key_combos[COMBO_COUNT] = {
   [COMBO6] = COMBO(combo6, OSM(MOD_RSFT)),
 };
 
+
+enum userspace_layers {
+  _DEFAULTS = 0,
+  _SYMBOL,
+  _WINDOW,
+  _NUM_CURSOR,
+  _MOUSE,
+};
+
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [0] = LAYOUT_split_3x6_3(
+  [_DEFAULTS] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      CW_TOGG,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  BSPCDEL,
+       KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P, BSPC_DEL,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,  KC_ENT,
+      KC_LALT,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L,SCLN_CLN,  KC_ENT,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                         KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, JP_UNDS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                     KC_LALT, KC_LCTL, LT(2,KC_SPC),      MO(4), LT(1,KC_SPC), LT(3,KC_ESC)
+                          KC_LCTL, MO(_SYMBOL),  LT(_WINDOW,KC_SPC),   LT(_MOUSE,KC_ESC), LT(_NUM_CURSOR,KC_SPC), KC_RSFT
                                       //`--------------------------'  `--------------------------'
   ),
 
   // 記号
-  [1] = LAYOUT_split_3x6_3(
+  // !~#$%   `{}<
+  // \^&|@   "()>"
+  // *+-_=   '[]
+  [_SYMBOL] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      CW_TOGG, KC_EXLM, JP_TILD, KC_HASH,  KC_DLR, KC_PERC,                        JP_AT,     UP5,   KC_UP, XXXXXXX, XXXXXXX, BSPCDEL,
+      KC_TRNS, KC_EXLM, JP_TILD, KC_HASH,  KC_DLR, KC_PERC,                      JP_GRV,  JP_LCBR, JP_RCBR,   KC_LT, XXXXXXX,  KC_TRNS,
+  //|--------+--------+--------+--------c+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_TRNS, JP_BSLS, JP_CIRC, JP_AMPR, JP_PIPE,   JP_AT,                      JP_DQUO, JP_LPRN, JP_RPRN,   KC_GT,  KC_END,  KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB, JP_AMPR, JP_PIPE, JP_CIRC,  JP_EQL, JP_COLN,                      KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END,  KC_ENT,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, JP_BSLS, JP_PLUS, KC_MINS, JP_UNDS, JP_ASTR,                      BSPCDEL,  KC_F12,   DOWN5,  KC_F2,  XXXXXXX, JP_UNDS,
+      KC_TRNS, JP_ASTR, JP_PLUS, KC_MINS, JP_UNDS,  JP_EQL,                     JP_QUOT,  JP_LBRC, JP_RBRC, XXXXXXX,  XXXXXXX, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
+                                          KC_TRNS, KC_TRNS, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
   ),
 
-  // 数字、移動
-  [2] = LAYOUT_split_3x6_3(
+
+  [_WINDOW] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      CW_TOGG,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, BSPCDEL,
+      KC_TRNS, XXXXXXX, XXXXXXX, TAB_PRV, TAB_NXT, TAB_END,                      XXXXXXX,DISP_LEFT, WIN_UP,DISP_RIGHT, XXXXXXX, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB, XXXXXXX,   WIN_E, APP_PRV, APP_NXT, APP_END,                      WIN_TAB,WIN_LEFT,WIN_RIGHT, WIN_UP, XXXXXXX,  KC_ENT,
+      KC_TRNS, XXXXXXX,   WIN_E, APP_PRV, APP_NXT, TD(TD_APP_END),               WIN_TAB,WIN_LEFT,WIN_DOWN,WIN_RIGHT,XXXXXXX, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, WIN_SCR, WIN_PRV, WIN_NXT, XXXXXXX,                      TAB_END, TAB_PRV, TAB_NXT,WIN_DOWN, XXXXXXX, JP_UNDS,
+      KC_TRNS, XXXXXXX, WIN_SCR, WIN_PRV, WIN_NXT,   WIN_V,                         WIN1,    WIN2,    WIN3,    WIN4,    WIN5, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
-                                      //`--------------------------'  `--------------------------'
-  ),
-  // マウス、その他
-  [3] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      CW_TOGG, XXXXXXX,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                      XXXXXXX, XXXXXXX, KC_MS_U, XXXXXXX, XXXXXXX, BSPCDEL,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB, XXXXXXX, XXXXXXX, KC_BTN1, KC_BTN2, XXXXXXX,                      XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, KC_VOLU,  KC_ENT,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, KC_WH_U, XXXXXXX, KC_WH_D, KC_VOLD, JP_UNDS,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
+                                          KC_TRNS, KC_TRNS, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
   ),
 
-  // 囲み記号
-  [4] = LAYOUT_split_3x6_3(
+  [_NUM_CURSOR] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, JP_LCBR,  JP_GRV,                      JP_RCBR,     UP5,   KC_UP, XXXXXXX, XXXXXXX, BSPCDEL,
+      KC_TRNS,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      XXXXXXX,     UP5,   KC_UP, XXXXXXX, XXXXXXX, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_TAB, XXXXXXX, XXXXXXX, XXXXXXX, JP_LPRN, JP_DQUO,                      JP_RPRN, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END,  KC_ENT,
+      KC_TRNS,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,                      KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX,   KC_LT, JP_LBRC, JP_QUOT,                      JP_RBRC, BSPCDEL,   DOWN5, XXXXXXX, XXXXXXX, JP_UNDS,
+      KC_TRNS,  CTRL_Z,  CTRL_X,  CTRL_C,  CTRL_V, XXXXXXX,                     BSPC_DEL,  KC_F12,   DOWN5,  KC_F2,  XXXXXXX, KC_TRNS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT, KC_LCTL, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
+                                          KC_TRNS, KC_TRNS, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
-  )
+  ),
+
+  [_MOUSE] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      KC_TRNS, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      KC_WH_L, KC_MS_U, XXXXXXX, KC_VOLU, KC_VOLD, KC_TRNS,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_TRNS, XXXXXXX, XXXXXXX,LCTL(KC_BTN1),KC_BTN1,KC_BTN2,                   KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX, XXXXXXX, KC_TRNS,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_TRNS, XXXXXXX, XXXXXXX,HIS_PREV, HIS_NEXT, XXXXXXX,                     KC_WH_U, KC_WH_D, KC_WH_R, XXXXXXX, XXXXXXX, KC_TRNS,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                          KC_TRNS, KC_ACL1, KC_ACL2,   KC_TRNS, KC_TRNS, KC_TRNS
+                                      //`--------------------------'  `--------------------------'
+  ),
+
 };
+
+
 
 
 #ifdef OLED_ENABLE
@@ -304,7 +341,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 tap_code(KC_DOWN);
             }
             return false;
-        case BSPCDEL:
+        case BSPC_DEL:
             if (record->event.pressed) {
                 if (get_mods() & MOD_MASK_SHIFT) {
                     saved_mods = get_mods() & MOD_MASK_SHIFT; // Mask off anything that isn't Shift
@@ -318,6 +355,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 add_mods(saved_mods);
                 unregister_code(KC_DEL);
                 unregister_code(KC_BSPC);
+            }
+            return false;
+        case SCLN_CLN:
+            if (record->event.pressed) {
+                if (get_mods() & MOD_MASK_SHIFT) {
+                    saved_mods = get_mods() & MOD_MASK_SHIFT; // Mask off anything that isn't Shift
+                    del_mods(saved_mods); // Remove any Shifts present
+                    register_code(JP_COLN);
+                } else {
+                    saved_mods = 0; // Clear saved mods so the add_mods() below doesn't add Shifts back when it shouldn't
+                    register_code(KC_SCLN);
+                }
+            } else {
+                add_mods(saved_mods);
+                unregister_code(JP_COLN);
+                unregister_code(KC_SCLN);
             }
             return false;
     }

@@ -4,6 +4,6 @@ OLED_ENABLE     = yes
 OLED_DRIVER     = SSD1306
 LTO_ENABLE      = yes
 EXTRAKEY_ENABLE = yes # controls volume
-TAP_DANCE_ENABLE = no
+TAP_DANCE_ENABLE = yes
 COMBO_ENABLE = yes
 CAPS_WORD_ENABLE = yes
