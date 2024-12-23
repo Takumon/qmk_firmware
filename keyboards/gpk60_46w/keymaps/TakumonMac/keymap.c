@@ -1,34 +1,82 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 
+
+
 #include QMK_KEYBOARD_H
 
-#define JP_MHEN KC_INT5 // Muhenkan (無変換)
-#define JP_HENK KC_INT4 // Henkan (変換)
+///////////////////////////////
+// Windows
+///////////////////////////////
 
-#define JP_DQUO S(KC_2) // "
+// #define JP_MHEN KC_INT5 // Muhenkan (無変換)
+// #define JP_HENK KC_INT4 // Henkan (変換)
 
-#define JP_AMPR S(KC_6) // &
-#define JP_QUOT S(KC_7) // '
-#define JP_GRV S(KC_LBRC) // `
-#define JP_EQL S(KC_MINS) // =
-#define JP_COLN KC_QUOT // :
+// #define JP_DQUO S(KC_2) // "
 
-#define JP_BSLS KC_INT1 // (backslash)
-#define JP_PLUS S(KC_SCLN) // +
-#define JP_ASTR S(KC_QUOT) // *
-#define JP_PIPE S(KC_INT3) // |
+// #define JP_AMPR S(KC_6) // &
+// #define JP_QUOT S(KC_7) // '
+// #define JP_GRV S(KC_LBRC) // `
+// #define JP_EQL S(KC_MINS) // =
+// #define JP_COLN KC_QUOT // :
 
-#define JP_AT KC_LBRC // @
-#define JP_CIRC KC_EQL // ^
-#define JP_TILD S(KC_EQL) // ~
-#define JP_UNDS S(KC_INT1) // _
+// #define JP_BSLS KC_INT1 // (backslash)
+// #define JP_PLUS S(KC_SCLN) // +
+// #define JP_ASTR S(KC_QUOT) // *
+// #define JP_PIPE S(KC_INT3) // |
 
-#define JP_LPRN S(KC_8) // (
-#define JP_RPRN S(KC_9) // )
-#define JP_LBRC KC_RBRC // [
-#define JP_RBRC KC_NUHS // ]
-#define JP_LCBR S(KC_RBRC) // {
-#define JP_RCBR S(KC_NUHS) // }
+// #define JP_AT KC_LBRC // @
+// #define JP_CIRC KC_EQL // ^
+// #define JP_TILD S(KC_EQL) // ~
+// #define JP_UNDS S(KC_INT1) // _
+
+// #define JP_LPRN S(KC_8) // (
+// #define JP_RPRN S(KC_9) // )
+// #define JP_LBRC KC_RBRC // [
+// #define JP_RBRC KC_NUHS // ]
+// #define JP_LCBR S(KC_RBRC) // {
+// #define JP_RCBR S(KC_NUHS) // }
+
+
+
+///////////////////////////////
+// Mac
+///////////////////////////////
+
+#define JP_MHEN KC_LANGUAGE_2  // 英数
+#define JP_HENK KC_LANGUAGE_1 // かな
+
+#define JP_DQUO S(KC_QUOT) // "
+
+#define JP_AMPR S(KC_7) // &
+#define JP_QUOT KC_QUOT // '
+#define JP_GRV KC_GRV // `
+#define JP_EQL KC_EQL // =
+#define JP_COLN S(KC_SCLN) // :
+
+#define JP_BSLS KC_NUHS // (backslash)
+#define JP_PLUS S(KC_EQL) // +
+#define JP_ASTR S(KC_8) // *
+#define JP_PIPE S(KC_NUHS) // |
+
+#define JP_AT S(KC_2) // @
+#define JP_CIRC KC_CIRC // ^
+
+#define JP_TILD S(KC_GRV) // ~
+#define JP_UNDS S(KC_MINS) // _
+
+#define JP_LPRN S(KC_9) // (
+#define JP_RPRN S(KC_0) // )
+#define JP_LBRC KC_LBRC // [
+
+#define JP_RBRC KC_RBRC // ]
+#define JP_LCBR S(KC_LBRC) // {
+#define JP_RCBR S(KC_RBRC) // }
+
+
+
+///////////////////////////////
+// common
+///////////////////////////////
 
 #define WIN1 LGUI(KC_1)
 #define WIN2 LGUI(KC_2)
@@ -81,6 +129,9 @@ enum custom_keycodes {
     DOWN5,
     BSPC_DEL,
     SCLN_CLN,
+    // MacのHomeとEndだとぶっ飛んでしまうので、Win風のHOMEキーにカスタマイズ
+    MC_HOME,
+    MC_END
 };
 
 
@@ -175,7 +226,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
     KC_TRNS,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                   XXXXXXX,     UP5,   KC_UP, XXXXXXX, XXXXXXX, KC_TRNS,
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
-    KC_TRNS,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,                   KC_HOME, KC_LEFT, KC_DOWN, KC_RGHT,  KC_END, KC_TRNS,
+    KC_TRNS,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,                   MC_HOME, KC_LEFT, KC_DOWN, KC_RGHT,  MC_END, KC_TRNS,  // HOME, ENDはカスタマイズキーを使用
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
     KC_TRNS,  CTRL_Z,  CTRL_X,  CTRL_C,  CTRL_V, XXXXXXX, KC_TRNS, KC_TRNS,BSPC_DEL,  KC_F12,   DOWN5,  KC_F2,  XXXXXXX, KC_TRNS,
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
@@ -266,15 +317,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 if (get_mods() & MOD_MASK_SHIFT) {
                     saved_mods = get_mods() & MOD_MASK_SHIFT; // Mask off anything that isn't Shift
                     del_mods(saved_mods); // Remove any Shifts present
-                    register_code(JP_COLN);
+                    // register_code(JP_COLN);
                 } else {
                     saved_mods = 0; // Clear saved mods so the add_mods() below doesn't add Shifts back when it shouldn't
                     register_code(KC_SCLN);
                 }
             } else {
                 add_mods(saved_mods);
-                unregister_code(JP_COLN);
+                // unregister_code(JP_COLN);
                 unregister_code(KC_SCLN);
+            }
+            return false;
+        // MacのHomeとEndだとぶっ飛んでしまうので、Win風のHOMEキーにカスタマイズ
+        case MC_HOME:
+            if (record->event.pressed) {
+                register_code(KC_LGUI);
+                tap_code(KC_LEFT);
+                unregister_code(KC_LGUI);
+            }
+            return false;
+        case MC_END:
+            if (record->event.pressed) {
+                register_code(KC_LGUI);
+                tap_code(KC_RGHT);
+                unregister_code(KC_LGUI);
             }
             return false;
     }
@@ -284,7 +350,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         case KC_A ... KC_Z:
-        case JP_UNDS:
+        // case JP_UNDS:
             add_weak_mods(MOD_BIT(KC_LSFT));
             return true;
 
