@@ -190,7 +190,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
     KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,  KC_PAGE_DOWN,   KC_PAGE_UP,     KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH, JP_UNDS,
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
-                                KC_LGUI, KC_LCTL, MO(_SYMBOL), LT(_WINDOW,KC_SPC),   LT(_MOUSE,KC_ESC), LT(_NUM_CURSOR,KC_SPC),   KC_RSFT, KC_RGUI
+                KC_LCTL, KC_LGUI, MO(_SYMBOL), LT(_WINDOW,KC_SPC),   LT(_MOUSE,KC_ESC), LT(_NUM_CURSOR,KC_SPC),   KC_RSFT, KC_RGUI // WinからMacへの変更に伴い GUIとCTRLは入れ替え
 //+--------+--------+--------+--------+--------+--------+                 +--------+--------+--------+--------+--------+--------+
   ),
 
@@ -316,14 +316,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 if (get_mods() & MOD_MASK_SHIFT) {
                     saved_mods = get_mods() & MOD_MASK_SHIFT; // Mask off anything that isn't Shift
-                    del_mods(saved_mods); // Remove any Shifts present
-                    // register_code(JP_COLN);
+                    register_code(KC_SCLN);
                 } else {
                     saved_mods = 0; // Clear saved mods so the add_mods() below doesn't add Shifts back when it shouldn't
                     register_code(KC_SCLN);
                 }
             } else {
-                add_mods(saved_mods);
+                del_mods(saved_mods); // Remove any Shifts present
                 // unregister_code(JP_COLN);
                 unregister_code(KC_SCLN);
             }
